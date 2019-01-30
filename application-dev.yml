@@ -1,7 +1,7 @@
 #加密配置
 jasypt:
   encryptor:
-    password: lengleng
+    password: huauri
 
 server:
   tomcat:
@@ -17,8 +17,8 @@ spring:
   rabbitmq:
     host: 127.0.0.1
     port: 5672
-    username: pig
-    password: lengleng
+    username: guest
+    password: guest
   http:
     multipart:
       max-file-size: 1000MB
@@ -31,7 +31,7 @@ redis:
 ribbon:
   eager-load:
     enabled: true
-    clients: pig-auth,pig-upms-service
+    clients: auth,upms-service
   Httpclient:
     enabled: false
   OkHttp:
