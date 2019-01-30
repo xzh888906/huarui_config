@@ -13,7 +13,7 @@ zuul:
   ribbon:
     eager-load:
       enabled: true
-      clients: pig-auth,pig-upms-service,pig-demo-service
+      clients: auth,upms-service,demo-service
   ignoredServices: '*'
   host:
     connect-timeout-millis: 10000
@@ -38,11 +38,11 @@ security:
   sessions: stateless
   oauth2:
     client:
-      client-id: pig
-      client-secret: pig
+      client-id: huarui
+      client-secret: huarui
     resource:
       jwt:
-         key-uri: ${security.auth.server}/oauth/token_key #解析jwt令牌所需要密钥的地址
+         key-uri: http://127.0.0.1:3000/oauth/token_key #解析jwt令牌所需要密钥的地址
 
 ignore:
   urls:
