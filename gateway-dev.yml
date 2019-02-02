@@ -1,17 +1,56 @@
+env: dev
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://localhost:7000/eureka/
+  instance:
+    prefer-ip-address: true #使用IP注册
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+    ##续约更新时间间隔设置5秒，m默认30s
+    lease-renewal-interval-in-seconds: 5
+    ##续约到期时间10秒，默认是90秒
+    lease-expiration-duration-in-seconds: 10
 server:
   port: 7003
-
-ignore:
-  urls:
-  - /**/*.css
-  - /auth/**
-  - /admin/user/mobile/**
-  - /refresh/**
-  - /swagger-ui.html
-  - /swagger-resources/**
-  - /*/v2/api-docs
-  - /webjars/**
-
+  tomcat:
+      max-threads: 500 # Maximum amount of worker threads.
+      min-spare-threads: 50 # Minimum amount of worker threads
+spring:
+  application:
+    name: gateway
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/huarui1?useUnicode=true&characterEncoding=UTF8&useSSL=false&autoReconnect=true
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root
+      max-idle: 10
+      min-idle: 5
+      test-on-borrow: false
+      time-between-eviction-runs-millis: 18800
+      test-while-idle: true
+      validation-query: SELECT 1
+      hikari:
+        minimum-idle: 0
+  cloud:
+    config:
+      server:
+        git:
+          password: xzh@770207
+          uri: https://github.com/xzh888906/huarui_config.git
+          username: xzh888906
+  rabbitmq:
+    host: localhost
+    password: guest
+    port: 5672
+    username: guest
+  redis:
+      host: 127.0.0.1
+      port: 6379
+  http:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
 swagger:
   client:
     - user-service
@@ -19,25 +58,43 @@ swagger:
 # 关闭默认路由
 zuul:
   ignoredServices: '*'
+ribbon:
+  eager-load:
+    enabled: true
+    clients: oauth
+  Httpclient:
+    enabled: true
+  OkHttp:
+    enabled: false
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
 
-
----
-spring:
-  profiles: dev
-eureka:
-  instance:
-    ip-address: 127.0.0.1
-    prefer-ip-address: true
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: false
+  httpclient:
+    enabled: true
   client:
-    service-url:
-      defaultZone: http://127.0.0.1:7000/eureka/
----
-spring:
-  profiles: prod
-eureka:
-  instance:
-    ip-address: 193.112.100.103
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://193.112.100.103:8761/eureka/
+    config:
+      feignName:
+        connectTimeout: 30000
+        readTimeout: 30000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+hystrix:
+  threadpool:
+    default:
+      coreSize: 500
+      maxQueueSize: 1000
+      queueSizeRejectionThreshold: 800
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
